@@ -57,7 +57,7 @@ Console.WriteLine("\n\n--- 2. RESERVAS: DEMO CRUD & STRATEGY (Patrón de Comport
 var inDate = DateOnly.FromDateTime(DateTime.Today.AddDays(10));
 var outDate = DateOnly.FromDateTime(DateTime.Today.AddDays(13)); // 3 noches
 
-// CREATE (una etrategia paraestandas)
+// CREATE (una etrategia para)
 var standardStrategy = new StandardPricingStrategy();
 var res1 = reservationService.CreateReservation(1, 1, inDate, outDate, standardStrategy);
 Console.WriteLine($"\n[CREATE: STANDARD] Reserva OK ({res1})");
