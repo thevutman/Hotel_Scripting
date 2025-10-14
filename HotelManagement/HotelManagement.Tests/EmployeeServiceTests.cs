@@ -19,6 +19,13 @@ namespace HotelManagement.Tests
             };
         }
 
+        [TearDown]
+        public void TearDown()
+        {
+            // Limpiar el estado del Singleton después de cada prueba
+            EmployeeServiceSingleton.ResetInstance();
+        }
+
         // PRUEBA: AUTENTICACIÓN Y ROLES
         [Test]
         public void Authenticate_ShouldReturnEmployee_WhenIdExists()

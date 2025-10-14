@@ -60,6 +60,14 @@ namespace HotelManagement.Services
             return employee != null && employee.Role == requiredRole;
         }
 
+        public static void ResetInstance()
+        {
+            lock (Lock)
+            {
+                _instance = null;
+            }
+        }
+
         public IEnumerable<Employee> GetAllEmployees() => _employees;
     }
 }
