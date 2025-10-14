@@ -1,4 +1,5 @@
-﻿using System;
+﻿// ./Services/ReservationService.cs
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -22,20 +23,21 @@ namespace HotelManagement.Services
 
         public bool IsRoomAvailable(int roomId, DateOnly from, DateOnly to)
         {
-            // Rango medio abierto [from, to)
             return !_reservations.Any(r => r.RoomId == roomId && Overlap(r.CheckIn, r.CheckOut, from, to));
         }
 
-        public Reservation? CreateReservation(int roomId, int customerId, DateOnly checkIn, DateOnly checkOut)
+        public Reservation? CreateReservation(int roomId, int customerId, DateOnly checkIn, DateOnly checkOut, IPricingStrategy pricingStrategy)
         {
             if (checkOut <= checkIn) return null;
+            if (checkIn < DateOnly.FromDateTime(DateTime.Today)) return null;
+
             var room = _rooms.FirstOrDefault(r => r.Id == roomId);
             var customer = _customers.FirstOrDefault(c => c.Id == customerId);
             if (room is null || customer is null) return null;
+
             if (!IsRoomAvailable(roomId, checkIn, checkOut)) return null;
 
-            var nights = checkOut.DayNumber - checkIn.DayNumber;
-            var total = nights * room.Price;
+            var total = pricingStrategy.CalculateTotal(room, checkIn, checkOut);
 
             var res = new Reservation
             {
@@ -53,6 +55,6 @@ namespace HotelManagement.Services
         public IEnumerable<Reservation> GetAllReservations() => _reservations;
 
         private static bool Overlap(DateOnly aStart, DateOnly aEnd, DateOnly bStart, DateOnly bEnd)
-            => aStart < bEnd && bStart < aEnd; // medio abierto
+            => aStart < bEnd && bStart < aEnd;
     }
 }
